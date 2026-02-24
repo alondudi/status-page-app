@@ -20,7 +20,7 @@ services:
     restart: always
 
   web:
-    build: .
+    image: 992382545251.dkr.ecr.us-east-1.amazonaws.com/alon-aviad-repo:status-page-2.0
     ports:
       - "8000:8000"
     depends_on:
@@ -31,7 +31,7 @@ services:
       - static_volume:/opt/status-page/statuspage/static # <--- הוספנו כאן
 
   worker:
-    build: .
+    image: 992382545251.dkr.ecr.us-east-1.amazonaws.com/alon-aviad-repo:status-page-2.0
     command: python3 statuspage/manage.py rqworker --with-scheduler
     depends_on:
       - db
