@@ -11,9 +11,9 @@ ALLOWED_HOSTS = ['*']
 # PostgreSQL database configuration. See the Django documentation for a complete list of available parameters:
 #   https://docs.djangoproject.com/en/stable/ref/settings/#databases
 DATABASE = {
-    'NAME': 'status-page',         # Database name
-    'USER': 'status-page',               # PostgreSQL username
-    'PASSWORD': 'avi2788',           # PostgreSQL password
+    'NAME': 'statuspage',         # Database name
+    'USER': 'dbadmin',               # PostgreSQL username
+    'PASSWORD': ':9Zt3=78LeIuK*A?',           # PostgreSQL password
     'HOST': 'db',      # Database server
     'PORT': '',               # Database port (leave blank for default)
     'CONN_MAX_AGE': 300,      # Max database connection age
