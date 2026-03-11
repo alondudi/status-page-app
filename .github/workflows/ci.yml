@@ -1,0 +1,79 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# הרשאות חובה עבור יצירת טוקן OIDC מול AWS (מחליף את הצורך בסודות קבועים)
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-push:
+    runs-on: self-hosted # ודא שה-Runner המקומי שלך פועל, או שנה ל-'ubuntu-latest' אם תרצה להריץ בענן של GitHub
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 1. התחברות ל-AWS ללא ססמאות בעזרת OIDC
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::992382545251:role/github-actions-ecr-role
+          aws-region: us-east-1
+
+      # 2. קבלת אישור התחברות מ-ECR
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # 3. בנייה ודחיפה של התמונה ל-AWS ECR
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/alon-aviad-repo:latest
+            ${{ steps.login-ecr.outputs.registry }}/alon-aviad-repo:${{ github.sha }}
+
+      # 4. עדכון מאגר ה-GitOps עם כתובת התמונה החדשה
+      - name: Update GitOps repository
+        shell: bash
+        env:
+          GIT_TOKEN: ${{ secrets.GITOPS_PAT }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: alon-aviad-repo
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # הגדרת גישה ל-Git
+          git config --global credential.helper store
+          echo "https://${GIT_TOKEN}:x-oauth-basic@github.com" > ~/.git-credentials
+          
+          # ניקוי תיקייה קודמת אם קיימת ומשיכת המאגר
+          rm -rf gitops
+          git clone https://github.com/alondudi/status-page-DevOps.git gitops
+          cd gitops
+          
+          # הגדרת הכתובת המלאה של התמונה החדשה ב-AWS
+          NEW_IMAGE="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+          
+          # החלפת הכתובת הישנה בכתובת החדשה בתוך קובץ ההגדרות
+          if [[ "$OSTYPE" == "darwin"* ]]; then
+            sed -i '' "s|image: .*|image: ${NEW_IMAGE}|g" deployment.yaml
+          else
+            sed -i "s|image: .*|image: ${NEW_IMAGE}|g" deployment.yaml
+          fi
+          
+          # דחיפת השינוי למאגר ה-GitOps
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add deployment.yaml
+          git commit -m "Update image to ${IMAGE_TAG} in AWS ECR"
+          git push -f https://${GIT_TOKEN}@github.com/alondudi/status-page-DevOps.git main
