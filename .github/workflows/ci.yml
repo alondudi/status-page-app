@@ -39,18 +39,17 @@ jobs:
         with:
           context: .
           push: true
-          tags: |
-            ${{ steps.login-ecr.outputs.registry }}/alon-aviad-repo:latest
-            ${{ steps.login-ecr.outputs.registry }}/alon-aviad-repo:${{ github.sha }}
-
-      # 4. עדכון מאגר ה-GitOps עם כתובת התמונה החדשה
+          provenance: false
+          tags: ${{ steps.login-ecr.outputs.registry }}/alon-aviad-repo:status-page-${{ github.run_number }}
+ 
+     # 4. עדכון מאגר ה-GitOps עם כתובת התמונה החדשה
       - name: Update GitOps repository
         shell: bash
         env:
           GIT_TOKEN: ${{ secrets.GITOPS_PAT }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: alon-aviad-repo
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: status-page-${{ github.run_number }}
         run: |
           # הגדרת גישה ל-Git
           git config --global credential.helper store
