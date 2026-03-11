@@ -76,3 +76,4 @@ jobs:
           git add deployment.yaml
           git commit -m "Update image to ${IMAGE_TAG} in AWS ECR"
           git push -f https://${GIT_TOKEN}@github.com/alondudi/status-page-DevOps.git main
+
