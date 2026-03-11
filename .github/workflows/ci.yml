@@ -60,9 +60,9 @@ jobs:
           
           # העדכון משתנה: אנחנו עורכים את values.yaml ומחליפים רק את ה-tag
           if [[ "$OSTYPE" == "darwin"* ]]; then
-            sed -i '' "s|tag: .*|tag: \"${IMAGE_TAG}\"|g" values.yaml
+            sed -i '' "s|tag: .*|tag: \"${IMAGE_TAG}\"|g" status-page/values.yaml
           else
-            sed -i "s|tag: .*|tag: \"${IMAGE_TAG}\"|g" values.yaml
+            sed -i "s|tag: .*|tag: \"${IMAGE_TAG}\"|g" status-page/values.yaml
           fi
           
           git config --global user.name "GitHub Actions"
