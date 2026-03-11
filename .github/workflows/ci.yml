@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   build-and-push:
-    runs-on: self-hosted # ודא שה-Runner המקומי שלך פועל, או שנה ל-'ubuntu-latest' אם תרצה להריץ בענן של GitHub
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
