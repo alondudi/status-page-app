@@ -75,9 +75,8 @@ _patterns = [
     path('admin/', admin_site.urls),
 
     path('__reload__/', include('django_browser_reload.urls')),
-    # Expose Prometheus metrics (support both /metrics and /metrics/)
-    path('metrics', include('django_prometheus.urls')),
-    path('metrics/', include('django_prometheus.urls')),
+    # Expose Prometheus metrics at /metrics (django-prometheus defines /metrics itself)
+    path('', include('django_prometheus.urls')),
     
 ]
 
