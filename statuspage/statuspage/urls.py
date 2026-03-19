@@ -75,6 +75,7 @@ _patterns = [
     path('admin/', admin_site.urls),
 
     path('__reload__/', include('django_browser_reload.urls')),
+    path('metrics', include('django_prometheus.urls')),
 ]
 
 # Prepend BASE_PATH

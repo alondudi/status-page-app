@@ -28,3 +28,4 @@ typing-extensions==4.4.0
 setuptools<70.0.0
 rq==1.11.1
 whitenoise==6.4.0
+django-prometheus
