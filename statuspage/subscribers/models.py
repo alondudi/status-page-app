@@ -73,7 +73,7 @@ class Subscriber(StatusPageModel):
     def send_mail(self, subject, template, context=None):
         if context is None:
             context = {}
-        if not self.email_verified_at:
+        if not self.email_verified_at and template != 'subscribers/verification':
             return None
         config = get_config()
         extra_context = ({
