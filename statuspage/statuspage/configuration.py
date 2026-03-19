@@ -48,7 +48,7 @@ REDIS = {
 }
 
 # Define the URL which will be used e.g. in E-Mails
-SITE_URL = ""
+SITE_URL = "https://statuspage-aa.click/"
 
 # This key is used for secure generation of random numbers and strings. It must never be exposed outside of this file.
 # For optimal security, SECRET_KEY should be at least 50 characters in length and contain a mix of letters, numbers, and
@@ -99,14 +99,14 @@ DEBUG = False
 
 # Email settings
 EMAIL = {
-    'SERVER': 'localhost',
-    'PORT': 25,
-    'USERNAME': '',
-    'PASSWORD': '',
-    'USE_SSL': False,
+    'SERVER': 'smtp.gmail.com',
+    'PORT': 465,
+    'USERNAME': 'statuspageaa@gmail.com',
+    'PASSWORD': 'koseodvxsnsncpqo',
+    'USE_SSL': True,
     'USE_TLS': False,
-    'TIMEOUT': 10,  # seconds
-    'FROM_EMAIL': '',
+    'TIMEOUT': 60,
+    'FROM_EMAIL': 'statuspageaa@gmail.com',
 }
 
 # IP addresses recognized as internal to the system. The debugging toolbar will be available only to clients accessing
