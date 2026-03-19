@@ -78,7 +78,7 @@ _patterns = [
     # Expose Prometheus metrics (support both /metrics and /metrics/)
     path('metrics', include('django_prometheus.urls')),
     path('metrics/', include('django_prometheus.urls')),
-    # try 
+    
 ]
 
 # Prepend BASE_PATH
