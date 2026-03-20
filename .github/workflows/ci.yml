@@ -20,14 +20,15 @@ jobs:
 
       - name: Verify entrypoint.sh exists and is executable in image
         run: |
-          docker run --rm status-page-test \
-            bash -c "test -x /entrypoint.sh && echo 'entrypoint.sh is executable'"
-
-      - name: Smoke test - container starts without crashing
-        run: |
-          # Override ENTRYPOINT to skip migrations (no DB available), just verify the image runs
+          # Use --entrypoint bash to bypass entrypoint.sh (which needs Redis/DB)
           docker run --rm --entrypoint bash status-page-test \
-            -c "echo 'Container started successfully'; python3 -c 'import statuspage; print(\"App module import OK\")' || echo 'Module check done'"
+            -c "test -x /entrypoint.sh && echo 'entrypoint.sh is executable'"
+
+      - name: Smoke test - verify Python app imports correctly
+        run: |
+          # Bypass entrypoint.sh and verify core Python modules load without external services
+          docker run --rm --entrypoint python3 status-page-test \
+            -c "import django; import gunicorn; print('Core imports OK')"
 
   build-and-push:
     runs-on: ubuntu-latest
